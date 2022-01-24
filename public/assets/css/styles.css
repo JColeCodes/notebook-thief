@@ -42,7 +42,7 @@ body {
 }
 
 .list-container .card {
-  height: calc(100vh - 70px);
+  height: calc(100vh - 71px);
   border-bottom: none;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
@@ -62,17 +62,23 @@ body {
 
 .list-item-title {
   display: inline-block;
-  width: 75%;
+  width: 100%;
+  padding: 18px;
+  margin: -10px -18px;
 }
 
 .list-container i {
   font-size: 1.1rem;
   cursor: pointer;
+  padding: 8px 0;
 }
 
 .list-container .list-group-item {
   border-left: none;
   border-right: none;
-  padding: 20px;
   cursor: pointer;
+}
+
+.no-note-link {
+  cursor: auto;
 }

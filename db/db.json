@@ -1,19 +1,14 @@
 {
   "notes": [
     {
+      "title": "Hello World",
+      "text": "This is a sample :)",
+      "id": "20220124-013835"
+    },
+    {
       "title": "Test Title",
       "text": "Test text",
       "id": "0"
-    },
-    {
-      "title": "Ted Lasso",
-      "text": "Finish season 2",
-      "id": "1"
-    },
-    {
-      "title": "Finish this app",
-      "text": "I need to get this application working and completed!",
-      "id": "2"
     }
   ]
 }

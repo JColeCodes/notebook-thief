@@ -25,6 +25,7 @@ const hide = (elem) => {
 // activeNote is used to keep track of the note in the textarea
 let activeNote = {};
 
+// Get Fetch
 const getNotes = () => {
   fetch('/api/notes', {
     method: 'GET',
@@ -33,10 +34,10 @@ const getNotes = () => {
     },
   })
   .then(response => {
-    if (!response.ok) {
-      return alert('Error: ' + response.statusText);
+    if (response.ok) {
+      return response.json();
     }
-    return response.json();
+    console.log('Error: ' + response.statusText);
   })
   .then(noteData => {
     console.log(noteData);
@@ -44,8 +45,13 @@ const getNotes = () => {
   });
 }
 
-const saveNote = (note) => {
-  fetch('/api/notes', {
+// Save Fetch
+const saveNote = (note, id) => {
+  let fetchUrl = `/api/notes`;
+  if (id) {
+    fetchUrl = `/api/notes/${id}`;
+  }
+  fetch(fetchUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -56,7 +62,7 @@ const saveNote = (note) => {
     if (response.ok) {
       return response.json();
     }
-    alert('Error: ' + response.statusText);
+    console.log('Error: ' + response.statusText);
   })
   .then(noteResponse => {
     console.log(noteResponse);
@@ -64,6 +70,7 @@ const saveNote = (note) => {
   });
 }
 
+// Delete Fetch
 const deleteNote = (id) => {
   fetch(`/api/notes/${id}`, {
     method: 'DELETE',
@@ -75,7 +82,7 @@ const deleteNote = (id) => {
     if (response.ok) {
       return response.json();
     }
-    alert('Error: ' + response.statusText);
+    console.log('Error: ' + response.statusText);
   })
   .then(noteDelete => {
     console.log(noteDelete);
@@ -87,13 +94,13 @@ const renderActiveNote = () => {
   hide(saveNoteBtn);
 
   if (activeNote.id) {
-    noteTitle.setAttribute('readonly', true);
-    noteText.setAttribute('readonly', true);
     noteTitle.value = activeNote.title;
     noteText.value = activeNote.text;
+    if (noteTitle.value !== activeNote.title || noteText.value !== activeNote.text) {
+      // If value title or text is NOT the same as the active title or text, show save button
+      show(saveNoteBtn);
+    }
   } else {
-    noteTitle.removeAttribute('readonly');
-    noteText.removeAttribute('readonly');
     noteTitle.value = '';
     noteText.value = '';
   }
@@ -104,7 +111,7 @@ const handleNoteSave = () => {
     title: noteTitle.value,
     text: noteText.value,
   };
-  saveNote(newNote).then(() => {
+  saveNote(newNote, activeNote.id).then(() => {
     getAndRenderNotes();
     renderActiveNote();
   });
@@ -150,9 +157,7 @@ const handleRenderSaveBtn = () => {
 };
 
 // Render the list of note titles
-//const renderNoteList = async (notes) => {
 const renderNoteList = (notes) => {
-  //let jsonNotes = await notes.json();
   let jsonNotes = notes;
   if (window.location.pathname === '/notes') {
     noteList.forEach((el) => (el.innerHTML = ''));
@@ -168,7 +173,11 @@ const renderNoteList = (notes) => {
     const spanEl = document.createElement('span');
     spanEl.classList.add('list-item-title');
     spanEl.innerText = text;
-    spanEl.addEventListener('click', handleNoteView);
+    if (text !== 'No saved Notes') {
+      spanEl.addEventListener('click', handleNoteView);
+    } else {
+      spanEl.classList.add('no-note-link');
+    }
 
     liEl.append(spanEl);
 
@@ -206,7 +215,6 @@ const renderNoteList = (notes) => {
 };
 
 // Gets notes from the db and renders them to the sidebar
-//const getAndRenderNotes = () => getNotes().then(renderNoteList);
 
 if (window.location.pathname === '/notes') {
   saveNoteBtn.addEventListener('click', handleNoteSave);
@@ -214,7 +222,5 @@ if (window.location.pathname === '/notes') {
   noteTitle.addEventListener('keyup', handleRenderSaveBtn);
   noteText.addEventListener('keyup', handleRenderSaveBtn);
 }
-
-//getAndRenderNotes();
 
 getNotes();
